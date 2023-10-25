@@ -58,7 +58,7 @@ public class PaymentController {
             // Store the orderId and total in the session or model for further processing
             HttpSession session = request.getSession();
             session.setAttribute("orderId", RazorPayorderId);
-            session.setAttribute("totalprice", total2);
+            session.setAttribute("totalprice", total2*100);
             session.setAttribute ( "Email", user.getEmail() );
             session.setAttribute ( "UserName", user.getFirstName() );
 
@@ -90,12 +90,12 @@ public class PaymentController {
 
 
 
-            System.out.println(price        + "     total");
+            System.out.println(price         + "     total");
 
             JSONObject responseJson = new JSONObject();
             responseJson.put("status", "success");
             responseJson.put("orderId", orderId);
-            responseJson.put("amount", price);
+            responseJson.put("amount", price  );
             responseJson.put("key", keyId);
             responseJson.put("UserName",session.getAttribute ( "UserName" ).toString());
             responseJson.put("email",session.getAttribute ( "Email" ).toString());
