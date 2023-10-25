@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Order Management</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+  <style>
+    /* Style the table container */
+    .table-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* Style the table */
+    .table {
+      width: 100%;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style the table header */
+    .table th {
+      background-color: #343a40;
+      color: #ffffff;
+      text-align: left;
+    }
+
+    /* Style the table rows */
+    .table tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+
+    /* Style table cells */
+    .table td, .table th {
+      border: 1px solid #dee2e6;
+      padding: 12px;
+    }
+
+    /* Add hover effect to table rows */
+    .table tr:hover {
+      background-color: #e9ecef;
+    }
+
+    /* Style the action buttons */
+    .action-button {
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Style the dropdown buttons */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f8f9fa;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border: 1px solid #dee2e6;
+      padding: 10px;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="table-container">
+  <table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Order Id</th>
+      <th scope="col">Customer Name</th>
+      <th scope="col">Payment Mode</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Date</th>
+      <th scope="col">Order Status</th>
+      <th scope="col">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="order, rowStat : ${orders}">
+      <td th:text="${rowStat.index + 1}"></td>
+      <td th:text="${order.id}"></td>
+      <td th:text="${order.user.firstName}"></td>
+      <td th:text="${order.payment}"></td>
+      <td th:text="${order.count}"></td>
+      <td th:text="${order.createdAt}"></td>
+      <td>
+        <form id="statusForm${order.id}" method="post" enctype="application/x-www-form-urlencoded"
+              th:action="@{/order/{orderId}/updateStatus(orderId=${order.id})}">
+          <select id="statusSelect${order.id}" name="newStatus" onchange="SubmitForm('${order.id}')">
+            <option th:value="${order.status}" th:text="${order.status}"></option>
+            <option value="PENDING">Pending</option>
+            <option value="CONFIRMED">Confirmed</option>
+            <option value="SHIPPING">Shipped</option>
+            <option value="OUT_FOR_DELIVERY">Out for delivery</option>
+            <option value="DELIVERED">Delivered</option>
+          </select>
+        </form>
+      </td>
+      <td>
+        <div class="dropdown">
+          <button class="action-button">Actions</button>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function SubmitForm(orderId) {
+    var form = document.getElementById("statusForm" + orderId);
+    form.submit();
+  }
+</script>
+</body>
+</html>

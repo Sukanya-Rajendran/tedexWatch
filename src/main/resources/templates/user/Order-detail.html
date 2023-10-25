@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Order Management</title>
+  <!-- Add any necessary CSS styles here -->
+
+  <style>
+    /* Style the table container */
+    .table-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Style the table */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #ffffff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Style the table header */
+    .table th {
+      background-color: #333;
+      color: #ffffff;
+      padding: 10px;
+      text-align: left;
+    }
+
+    /* Style the table rows */
+    .table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    /* Style table cells */
+    .table td, .table th {
+      border: 1px solid #dddddd;
+      padding: 8px;
+    }
+
+    /* Add hover effect to table rows */
+    .table tr:hover {
+      background-color: #dddddd;
+    }
+
+    /* Style the action buttons */
+    .action-button {
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Style the dropdown buttons */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #f1f1f1;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Order Id</th>
+    <th scope="col">Image</th>
+    <th scope="col">Customer Name</th>
+    <th scope="col">Payment Mode</th>
+    <th scope="col">Quantity</th>
+
+    <th scope="col">Date</th>
+    <th scope="col">Order Status</th>
+    <th scope="col">Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="order, rowStat : ${orders}">
+    <td th:text="${order.id}"></td>
+    <td>
+      <div th:each="imageobj, imageindex : ${order.product.images}"
+                                   th:classappend="${imageindex.index == 0}? 'carousel-item active' : 'carousel-item'">
+      <img th:src="@{${'/images/product/' + imageobj.imagePath}}" alt="Product Image" width="100px" height="100px">
+    </div>
+    </td>
+
+    <td th:text="${order.user.firstName}"></td>
+    <td th:text="${order.payment}"></td>
+    <td th:text="${order.count}"></td>
+    <td th:text="${order.createdAt}"></td>
+    <td th:text="${order.status}"></td>
+    <td>
+      <!-- Dropdown button for actions -->
+      <div class="dropdown">
+        <button class="action-button">Actions</button>
+        <a th:href="@{'/orderdetails/' + ${order.id}}" class="action-button">View Details</a>
+
+
+        <!--        <div class="dropdown-content">-->
+        <!--          <a href="#" th:onclick="'editOrder(' + ${order.id} + ')'" th:text="Edit"></a>-->
+        <!--          <a href="#" th:onclick="'deleteOrder(' + ${order.id} + ')'" th:text="Delete"></a>-->
+        <!--        </div>-->
+      </div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<script>
+    function updateOrderStatus(orderId, newStatus) {
+        $.ajax({
+            type: "POST",
+          url: "/order/" + orderId + "/updateStatus"
+
+            data: { newStatus: newStatus },
+            success: function (response) {
+                alert(response); // Display a success message (you can handle this differently)
+                // You may also want to update the displayed status on the page here.
+            },
+            error: function (error) {
+                alert("Error updating order status."); // Handle errors gracefully
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

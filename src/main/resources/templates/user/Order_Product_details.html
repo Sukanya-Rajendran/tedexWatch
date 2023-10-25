@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <html>
+  <head>
+    <style>
+      body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+.shop-container {
+    width: 900px;
+    height: 109px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: teal;
+    color: #fff;
+    padding: 10px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+h2 {
+    margin-left: 10;
+}
+
+/* Pflegebox Styling */
+.pflegebox-container {
+    background-color: #e6e6e6;
+    border: 2px solid #c1ffba;
+    box-shadow: 5px 2px 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+.pflegebox {
+    display: flex;
+    gap: 20px;
+}
+
+.available-products,
+.selected-products {
+    flex: 1;
+}
+
+.package-box {
+    width: 300px;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 5px;
+    background-color: #007bff;
+    width: 0;
+    transition: width 0.3s ease-in-out;
+}
+
+#selected-products {
+    list-style: none;
+    padding: 0;
+}
+
+#selected-products li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+
+.product-image {
+    max-width: 100px;
+    height: auto;
+    border: 2px solid #c1ffba;
+    box-shadow: 5px 2px 5px rgba(0, 0, 0,       0.2);
+
+    border-radius: 5px;
+}
+
+/* Positionierung des Bildes über der Pflegebox */
+.image-container {
+    position: relative;
+    margin: 20px 0;
+    text-align: center;
+}
+
+.image-container img {
+    max-width: 50%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* Hinzufügen-Button stylen */
+.available-products button, .selected-products button {
+    display: block;
+    margin-top: 1px;
+    margin-left: 9px;
+  margin-bottom: 25px;
+    background-color: teal;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+/* Listenaufzählungspunkte ausblenden */
+ul {
+    list-style: none;
+    padding: 0;
+
+.available-products button:hover, .selected-products button:hover {
+    background-color: #008080;
+}
+
+  /* Button für den Kaufabschluss stylen */
+.checkout-button-container {
+    text-align: center; /* Zentriert den Button */
+    margin-top: 20px; /* Abstand zum vorherigen Element */
+}
+
+#checkout-button {
+    background-color: teal;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+#checkout-button[disabled] {
+    background-color: #ccc; /* Deaktivierter Zustand */
+    cursor: not-allowed;
+}
+
+
+
+    </style>
+    <link rel="stylesheet" type="text/css" href="stil.css">
+  </head>
+   <body>
+<div class="shop-container">
+
+
+  <section class="pflegebox-container">
+    <h2>Box Konfigurator</h2>
+    <div class="pflegebox">
+      <div class="available-products">
+        <h2>Produkte</h2>
+        <ul id="available-products">
+          <li data-product-id="1" data-product-value="8">
+            <img src="https://cdn.shopify.com/s/files/1/0649/9991/5750/files/Sauberkeit_2.svg?v=1694532608" alt="Produkt 1" class="product-image">
+            Produkt 1
+            <button onclick="addToBox(1)">Hinzufügen</button>
+          </li>
+
+          <li data-product-id="2" data-product-value="5">
+            <img src="https://cdn.shopify.com/s/files/1/0649/9991/5750/files/Sauberkeit_2.svg?v=1694532608" alt="Produkt 2" class="product-image">
+            Produkt 2
+            <button onclick="addToBox(2)">Hinzufügen</button>
+          </li>
+          <!-- Weitere Produkte hier auflisten -->
+        </ul>
+      </div>
+      <div class="selected-products">
+        <h2>Ausgewählte Produkte</h2>
+        <div class="package-box">
+          <div class="fill"></div>
+        </div>
+        <ul id="selected-products">
+          <!-- Die ausgewählten Produkte werden hier dynamisch hinzugefügt -->
+        </ul>
+        <p id="message"></p>
+        <div class="checkout-button-container">
+          <button id="checkout-button" onclick="checkout()">Kauf abschließen</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <tbody>
+  <tr th:each="order, rowStat : ${orders}">
+    <td th:text="${order.id}"></td>
+    <td>
+      <div th:each="imageobj, imageindex : ${order.product.images}"
+           th:classappend="${imageindex.index == 0}? 'carousel-item active' : 'carousel-item'">
+        <img th:src="@{${'/images/product/' + imageobj.imagePath}}" alt="Product Image" width="100px" height="100px">
+      </div>
+    </td>
+
+    <td th:text="${order.user.firstName}"></td>
+    <td th:text="${order.payment}"></td>
+    <td th:text="${order.count}"></td>
+    <td th:text="${order.createdAt}"></td>
+    <td th:text="${order.status}"></td>
+    <td>
+      <!-- Dropdown button for actions -->
+<!--      <div class="dropdown">-->
+<!--        <button class="action-button">Actions</button>-->
+<!--        <a th:href="@{'/orderdetails/' + ${order.id}}" class="action-button">View Details</a>-->
+
+
+        <!--        <div class="dropdown-content">-->
+        <!--          <a href="#" th:onclick="'editOrder(' + ${order.id} + ')'" th:text="Edit"></a>-->
+        <!--          <a href="#" th:onclick="'deleteOrder(' + ${order.id} + ')'" th:text="Delete"></a>-->
+        <!--        </div>-->
+      </div>
+    </td>
+  </tr>
+  </tbody>
+  <!-- Weitere Inhalte Ihres Shops -->
+</div>
+
+<script src="skript.js"></script>
+
+<script>
+  const MAX_TOTAL_COST = 40;
+const MIN_TOTAL_COST = 30;
+
+let selectedProducts = [];
+
+function addToBox(productId) {
+    const product = document.querySelector(`[data-product-id="${productId}"]`);
+    const productValue = parseInt(product.getAttribute("data-product-value"));
+
+    const existingProduct = selectedProducts.find((item) => item.id === productId);
+
+    if (existingProduct) {
+        if (getTotalCost() + productValue <= MAX_TOTAL_COST) {
+            existingProduct.quantity += 1;
+        } else {
+            alert("Die maximale Bestellsumme von 40€ wurde erreicht. Sie können keine weiteren Produkte hinzufügen.");
+            return;
+        }
+    } else {
+        if (getTotalCost() + productValue <= MAX_TOTAL_COST) {
+            selectedProducts.push({ id: productId, value: productValue, quantity: 1 });
+        } else {
+            alert("Die maximale Bestellsumme von 40€ wurde erreicht. Sie können keine weiteren Produkte hinzufügen.");
+            return;
+        }
+    }
+
+    updateSelectedProductsList();
+    updatePackageBoxFill();
+    checkTotalCostLimit();
+}
+
+function removeFromBox(productId) {
+    const existingProduct = selectedProducts.find((item) => item.id === productId);
+
+    if (existingProduct) {
+        existingProduct.quantity -= 1;
+
+        if (existingProduct.quantity <= 0) {
+            selectedProducts = selectedProducts.filter((item) => item.id !== productId);
+        }
+    }
+
+    updateSelectedProductsList();
+    updatePackageBoxFill();
+    checkTotalCostLimit();
+}
+
+function updateSelectedProductsList() {
+    const selectedProductsList = document.getElementById("selected-products");
+    selectedProductsList.innerHTML = "";
+    selectedProducts.forEach((item) => {
+        const product = document.querySelector(`[data-product-id="${item.id}"]`);
+        const productName = product.textContent.trim().split("Hinzufügen")[0];
+        const listItem = document.createElement("li");
+        listItem.textContent = `${productName} x${item.quantity}`;
+        const removeButton = document.createElement("button");
+        removeButton.textContent = "Entfernen";
+        removeButton.onclick = () => removeFromBox(item.id);
+        listItem.appendChild(removeButton);
+        selectedProductsList.appendChild(listItem);
+    });
+}
+
+function getTotalCost() {
+    return selectedProducts.reduce((total, item) => total + item.value * item.quantity, 0);
+}
+
+function updatePackageBoxFill() {
+    const packageBox = document.querySelector(".package-box");
+    const fill = document.querySelector(".fill");
+    const totalCost = getTotalCost();
+    const percentage = (totalCost / MAX_TOTAL_COST) * 100;
+
+    if (totalCost < MIN_TOTAL_COST) {
+        fill.style.backgroundColor = "#ff0000"; // Rot
+    } else if (totalCost >= MIN_TOTAL_COST && totalCost <= MAX_TOTAL_COST) {
+        fill.style.backgroundColor = "#00ff00"; // Grün
+    } else {
+        fill.style.backgroundColor = "#007bff"; // Blau
+    }
+
+    fill.style.width = percentage + "%";
+}
+
+
+function updateCheckoutButton() {
+    const totalPrice = getTotalCost();
+    const checkoutButton = document.getElementById("checkout-button");
+
+    if (totalPrice >= MIN_TOTAL_COST && totalPrice <= MAX_TOTAL_COST) {
+        checkoutButton.removeAttribute("disabled");
+    } else {
+        checkoutButton.setAttribute("disabled", true);
+    }
+}
+
+function checkout() {
+    const totalPrice = getTotalCost();
+
+    if (totalPrice >= MIN_TOTAL_COST && totalPrice <= MAX_TOTAL_COST) {
+        const selectedProductsData = getSelectedProducts();
+
+        // Hier können Sie den Code hinzufügen, um die ausgewählten Produkte und den Gesamtpreis zu verarbeiten und die Informationen zu speichern.
+
+        // Weiterleitung zur Seite mit Kontaktdaten
+        window.location.href = "LINK_ZUR_SEITE_MIT_KONTAKTDATEN";
+    } else {
+        alert("Die Gesamtbestellsumme muss zwischen 30€ und 40€ liegen, um den Kauf abzuschließen.");
+    }
+}
+
+// ... (Weitere Funktionen hier) ...
+
+</script>
+
+</body>
+</html>

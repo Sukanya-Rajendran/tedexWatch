@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Your HTML head content here -->
+
+    <!-- Your HTML head content here -->
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+
+</head>
+<style>
+  /* styles.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+.container {
+    text-align: center;
+    margin-top: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+p {
+    font-size: 24px;
+    color: #333;
+    margin-top: 20px;
+}
+
+input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    outline: none;
+}
+
+button {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+</style>
+<style>
+        /* Table styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Alternate row background color for better readability */
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Hover effect on rows */
+        tr:hover {
+            background-color: #ddd;
+        }
+    </style>
+<body>
+
+<h1>Your Wallet</h1>
+<p>Current Balance: $<span th:text="${wallet.balance}">0.00</span></p>
+<h1>Wallet History</h1>
+
+<table>
+  <tr>
+    <th>Transaction Date</th>
+    <th>Amount</th>
+    <th>Transaction Type</th>
+    <th>Wallet Method</th>
+  </tr>
+  <tr th:each="history, status : ${walletHistoryList}">
+    <td th:text="${history.transaction_date}"></td>
+    <td th:text="${history.amount}"></td>
+    <td th:text="${history.transaction}"></td>
+    <td th:text="${history.walletMethod}"></td>
+  </tr>
+</table>
+
+
+<!--<form th:action="@{/addCredit}" method="post">-->
+
+
+<!--  <input type="number" name="amount" placeholder="Enter credit amount" step="0.01" required />-->
+<!--  <button type="submit">Add Credit</button>-->
+</form>
+
+<!-- Other wallet-related content here -->
+</body>
+</html>

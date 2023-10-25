@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Offers</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      background-color: #007bff;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+    }
+
+    table {
+      background-color: #fff;
+      margin: 20px auto;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      width: 80%;
+    }
+
+    table th, table td {
+      text-align: center;
+      padding: 10px;
+    }
+
+    table th {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    table tr:hover {
+      background-color: #ccc;
+    }
+
+    .create-button {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    /* Add some additional styling */
+    ul.main {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+      background-color: #007bff;
+      overflow: hidden;
+    }
+
+    li {
+      float: left;
+    }
+
+    li a {
+      display: block;
+      color: #fff;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+
+    li a:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+<h1>Manage Offers</h1>
+<nav>
+  <ul class="main">
+    <li class="dashboard"><a href="/admin/adminMainPage">Dashboard</a></li>
+    <li class="edit"><a href="/product">Products</a></li>
+    <li class="write"><a th:href="@{/admin/category}">Category</a></li>
+    <li class="comments"><a href="/admin/inventory">Inventory</a></li>
+    <li class="users"><a href="/admin/manage/manageUser">User Management</a></li>
+    <li class="users"><a href="/ordermanage">Order Management</a></li>
+    <li class="users"><a href="/admin/coupons/">Coupon Management</a></li>
+    <li class="users"><a href="/offers/list">Offer Management</a></li>
+  </ul>
+</nav>
+
+<!-- Display success or error messages here if needed -->
+
+<table>
+  <thead>
+  <tr>
+    <th>ID</th>
+<!--    <th>Referral Code</th>-->
+    <th>Referral Amount</th>
+    <th>Active</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="offer : ${offers}">
+    <td th:text="${offer.id}"></td>
+<!--    <td th:text="${offer.referralCode}"></td>-->
+    <td th:text="${offer.referralAmount}"></td>
+    <td th:text="${offer.active} ? 'Active' : 'Inactive'"></td>
+  </tr>
+  </tbody>
+</table>
+
+<!-- Add a button to create a new offer -->
+<div class="create-button">
+  <a th:href="@{/offers/create}" class="btn btn-primary">Create New Offer</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Coupon Management - List</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+    }
+
+    /* Style for the navigation on the left */
+    nav {
+      background-color: #3498db;
+      color: #fff;
+      width: 200px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    nav a {
+      display: block;
+      margin: 20px;
+      font-size: 18px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+    }
+
+    h1 {
+      background-color: #3498db;
+      color: #fff;
+      padding: 20px;
+      margin: 0;
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    table th, table td {
+      padding: 12px;
+      text-align: left;
+    }
+
+    table th {
+      background-color: #3498db;
+      color: #fff;
+    }
+
+    table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    a.edit, a.delete {
+      display: inline-block;
+      text-align: center;
+      margin: 0;
+      padding: 5px 10px;
+      background-color: #3498db;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.2s;
+    }
+
+    a.edit:hover, a.delete:hover {
+      background-color: #2478a0;
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <ul class="main">
+    <li class="dashboard"><a href="/admin/adminMainPage">Dashboard</a></li>
+    <li class="edit"><a href="/product">Products</a></li>
+    <li class="write"><a href="/admin/category">Category</a></li>
+    <li class="comments"><a href="/admin/inventory">Inventory</a></li>
+    <li class="users"><a href="/admin/manage/manageUser">User Management</a></li>
+  </ul>
+</nav>
+<div class="content">
+  <h1>Coupon Management - List</h1>
+
+  <a th:href="@{/admin/coupons/create}">Create New Coupon</a>
+
+
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Coupon Code</th>
+    <th>Discount</th>
+    <th>Expiration Date</th>
+    <th>Coupon Stock</th>
+    <th>Purchase Limit Amount</th>
+    <th>Actions</th>
+    <th>Active</th> <!-- Add this column header -->
+
+  </tr>
+  <tr th:each="coupon : ${coupons}">
+    <td th:text="${coupon.id}"></td>
+    <td th:text="${coupon.code}"></td>
+    <td th:text="${coupon.discount}"></td>
+    <td th:text="${#dates.format(coupon.expirationPeriod, 'yyyy-MM-dd')}"></td>
+    <td th:text="${coupon.couponStock}"></td>
+    <td th:text="${coupon.Purchaselimitamount}"></td>
+    <td>
+      <!-- Use conditional statement to display Active status -->
+      <span th:if="${coupon.active}" style="color: green;">Active</span>
+      <span th:if="${coupon.active == null}" style="color: orange;">Unknown</span>
+      <span th:if="${coupon.active == false}" style="color: red;">Inactive</span>
+    </td>
+<!--    <td>-->
+<!--      <input type="checkbox" th:if="${coupon.active}" disabled>-->
+<!--      <input type="checkbox" th:if="${not coupon.active}" disabled>-->
+<!--    </td>-->
+    <td>
+      <a th:href="@{/admin/coupons/edit/{id}(id=${coupon.id})}" class="edit">Edit</a>
+      <a th:href="@{/admin/coupons/delete/{id}(id=${coupon.id})}" class="delete">Delete</a>
+    </td>
+  </tr>
+</table>
+</body>
+</html>
