@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
+        System.out.println(username + "7373493278y6r794 hsdhsadhsgdhgsjhcbsa1111111111111111");
         return userRepository.findByEmail(username);
     }
 
@@ -134,7 +135,6 @@ public class UserServiceImpl implements UserService {
         System.out.println(user);
         userRepository.save(user);
     }
-
 
 
     @Override
@@ -244,7 +244,40 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public User findByEmailOrPhone(String email, String phoneNumber) {
+        return userRepository.findByEmailOrPhone(email, phoneNumber);
     }
+
+    @Override
+    public void save(User referrer) {
+        userRepository.save(referrer);
+    }
+
+//    @Override
+//    public String getReferralCodeForUser(User user) {
+//        return  userRepository.getReferralCode(user.getId());
+//    }
+
+    @Override
+    public String getReferralCodeForUser(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        if (user != null) {
+            return user.getReferralCode();
+        } else {
+            // Handle the case where the user with the given userId is not found.
+            return null;
+        }
+    }
+
+    @Override
+    public User findByReferralCode(String referralCode) {
+        return  userRepository.findByReferralCode(referralCode);
+    }
+}
+
+
+
 
 
 //it is not working

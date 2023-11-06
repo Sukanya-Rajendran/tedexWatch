@@ -1,9 +1,6 @@
 package com.ecomapp.ecomapp.service.CartService;
 
-import com.ecomapp.ecomapp.model.Cart;
-import com.ecomapp.ecomapp.model.CartItem;
-import com.ecomapp.ecomapp.model.Coupon;
-import com.ecomapp.ecomapp.model.User;
+import com.ecomapp.ecomapp.model.*;
 import com.ecomapp.ecomapp.repository.CartItemRepository;
 import com.ecomapp.ecomapp.repository.CartRepository;
 import com.ecomapp.ecomapp.repository.ProductRepo.ProductRepository;
@@ -49,10 +46,6 @@ public class CartServiceImpl implements CartService {
     }
 
 
-
-
-
-
     @Override
     public void addToCartItem(String email, UUID productId) {
         System.out.println("======================================================================================================");
@@ -65,16 +58,18 @@ public class CartServiceImpl implements CartService {
         } else {
             Cart cart = new Cart();
             cart.setUser(user);
+            user.setCart(cart);
             cart.setProduct(productRepository.findById(productId).orElse(null));
             cart.setQuantity(1);
             cartRepository.save(cart);
+            userRepository.save(user);
         }
     }
 
     @Override
     public void addQuantity(String username, UUID cartId, int quantity) {
-        User user=userRepository.findByEmail(username);
-        Cart cart1=cartRepository.findById(cartId).get();
+        User user = userRepository.findByEmail(username);
+        Cart cart1 = cartRepository.findById(cartId).get();
         cart1.setQuantity(quantity);
         cart1.setUser(user);
         cartRepository.save(cart1);
@@ -91,12 +86,14 @@ public class CartServiceImpl implements CartService {
 
         List<Cart> cartItems = cartRepository.findByUser_Email(username);
 
-        return cartItems.stream()
+        double value =  cartItems.stream()
                 .mapToDouble(cartItem -> cartItem.getProduct().getPrice() * cartItem.getQuantity())
                 .sum();
-
-
-
+        for(Cart cart : cartItems){
+            cart.setTotalAmount((int) value);
+            cartRepository.save(cart);
+        }
+      return value;
     }
 
     @Override
@@ -104,32 +101,6 @@ public class CartServiceImpl implements CartService {
 
 
     }
-
-
-
-//    @Override
-//    public Cart checkOut(String userName) {
-//        User user =userRepository.findByEmail(userName);
-//
-//        if (user != null) {
-//            List<Cart> carts = cartRepository.findAll();
-//
-//            Cart cartUser = null;
-//            for (Cart cart : carts) {
-//                if (cart.getUser().getId().equals(user.getId())) {
-//                    cartUser = cart;
-//                    System.out.println(cartUser);
-//                }
-//            }
-//
-//
-//            return cartUser;
-//        }
-//
-//
-//        return null;
-//    }
-
 
 
     @Override
@@ -143,18 +114,7 @@ public class CartServiceImpl implements CartService {
         Optional<Cart> optionalCart = cartRepository.findById(cartId);
         return optionalCart.orElse(null);
     }
-//
-//    @Override
-//    public void addCouponToCart(Cart cart, Coupon coupon) {
-//        // Check if the cart already has a coupon associated with it
-//        if (cart.getCoupon() != null) {
-//            // Handle the case where the cart already has a coupon
-//            System.out.println("Cart already has a coupon associated.");
-//        } else {
-//            // Associate the coupon with the cart
-//            cart.setCoupon(coupon);
-//            cartRepository.save(cart);
-//        }
-//    }
-}
 
+
+
+}

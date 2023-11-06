@@ -26,6 +26,25 @@ public class UserDto {
 
     private String referralCode;
 
+    private String phoneNumber;
+    private String referralMethod;
+
+    public String getReferralMethod() {
+        return referralMethod;
+    }
+
+    public void setReferralMethod(String referralMethod) {
+        this.referralMethod = referralMethod;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getReferralCode() {
         return referralCode;
     }

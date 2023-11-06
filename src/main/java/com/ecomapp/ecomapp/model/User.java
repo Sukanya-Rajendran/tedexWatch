@@ -4,6 +4,7 @@ import lombok.ToString;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name =  "user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
@@ -24,7 +25,70 @@ public class User {
     private String password;
 
     private boolean blocked;
+
     private String referralCode;
+
+
+    private String phone;
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_referrals",
+            joinColumns = @JoinColumn(name = "referrer_id"),
+            inverseJoinColumns = @JoinColumn(name = "referred_id")
+    )
+    private Set<User> referredUsers;
+
+    @Enumerated(EnumType.STRING)
+    private ReferralMethod referralMethod;
+
+    public Set<User> getReferredUsers() {
+        return referredUsers;
+    }
+
+    public void setReferredUsers(Set<User> referredUsers) {
+        this.referredUsers = referredUsers;
+    }
+
+    public ReferralMethod getReferralMethod() {
+        return referralMethod;
+    }
+
+    public void setReferralMethod(ReferralMethod referralMethod) {
+        this.referralMethod = referralMethod;
+    }
+
+
+
+
+
+
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "default_address_id")
+    private Address defaultAddress;
+
+    public Address getDefaultAddress() {
+        return defaultAddress;
+    }
+
+    public void setDefaultAddress(Address defaultAddress) {
+        this.defaultAddress = defaultAddress;
+    }
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Address> addresses;
+
+
+
 
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -140,6 +204,9 @@ public class User {
         return blocked;
     }
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Cart> carts;
+
     @OneToOne
     @JoinColumn(name = "cart_id")
     @ToString.Exclude
@@ -174,8 +241,6 @@ public class User {
         this.resetPasswordToken=token;
 
     }
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Address> addresses;
 
     public List<Address> getAddresses() {
         return addresses;

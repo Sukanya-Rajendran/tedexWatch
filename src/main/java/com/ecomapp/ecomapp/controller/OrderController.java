@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +18,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.transaction.Transactional;
+import java.beans.Transient;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Controller
@@ -36,6 +40,7 @@ public class OrderController {
     CartRepository cartRepository;
 
 
+
     public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
@@ -48,42 +53,57 @@ public class OrderController {
 
     //    @Autowired
 //    ObjectMapper objectMapper;
-    @PostMapping("/save")
-    public String saveorder(
-            @RequestParam("selectedCartIds") List<UUID> selectedCartIds,
-            @RequestParam("addressid") String addressId,
-            @RequestParam("paymentMethod") String paymentmethod,
+    @GetMapping("/save/{addressId}/{paymentStatus}")
+    public ResponseEntity<String> saveOrder(
+            @PathVariable("addressId") String addressId,
+            @PathVariable("paymentStatus") String paymentmethod,
             Principal principal) throws JsonProcessingException {
-//        List<Cart> cartnew = objectMapper.readValue(cartlist, new TypeReference<List<Cart>>() {
-//        }
-//        );
-
 
         User user = userservice.findByUsername(principal.getName());
-        for (int i = 0; i < selectedCartIds.size(); i++) {
-            Address address = addressRepository.findById(UUID.fromString(addressId)).orElse(null);
-            Cart cart = cartRepository.findById(selectedCartIds.get(i)).orElse(null);
+        List<Cart> cart =cartRepository.findByUser_id(user.getId());
+        System.out.println(cart +"this is my order cart+========================");
+
+        Cart userCart =user.getCart();
+        Address address = addressRepository.findById(UUID.fromString(addressId)).orElse(null);
+
             CheckOut checkOut = new CheckOut();
             checkOut.setAddress(address);
-            checkOut.setUser(cart.getUser());
-            checkOut.setProduct(cart.getProduct());
+            checkOut.setUser(userCart.getUser());
+            checkOut.setProduct(userCart.getProduct());
             checkOut.setStatus(Status.PENDING);
-            checkOut.setCount(cart.getQuantity());
-            checkOut.setPayment(Payment.valueOf(paymentmethod));
+            checkOut.setCount(userCart.getQuantity());
+
+            if (paymentmethod.equals("ONLINE")) {
+
+                // Handle online payment method
+                checkOut.setPayment(Payment.ONLINE);
+                // Add code to process online payment here
+            } else if (paymentmethod.equals("COD")) {
+                System.out.println("hhhiii");
+                // Handle COD payment method
+                checkOut.setPayment(Payment.COD);
+                // Add code to process COD payment here
+            }
+
+        System.out.println(paymentmethod+"===============payment");
+
             checkOut.setCreatedAt(LocalDateTime.now());
 
             checkOutRepository.save(checkOut);
-            cartRepository.delete(cart);
-
+          cartRepository.delete(userCart);
 
             System.out.println(checkOut);
 
-        }
-        System.out.println(selectedCartIds);
+
+//        System.out.println(selectedCartIds);
         System.out.println(paymentmethod);
         System.out.println(addressId);
-        return "redirect:/order/success";
+
+        return ResponseEntity.status(HttpStatus.OK).body("Order saved successfully");
     }
+
+
+
 
     @GetMapping("/orderdetails")
     public String orderdetails(Principal principal, Model model) {
@@ -97,15 +117,17 @@ public class OrderController {
     @GetMapping("/orderdetails/{orderId}")
     public String viewOrderDetails( UUID id, Model model) {
         User user = userservice.findByUsername(getCurrentUsername());
-        // Fetch the order details based on the provided order ID
         List<CheckOut> checkOut = checkOutRepository.findByUser(user);
         model.addAttribute("order", checkOut);
         System.out.println(checkOut);
-//        model.addAttribute("products", checkOuts);
 
         return "user/CartProduct-detail";
     }
 
+    @GetMapping("/viewOrder")
+    public String ViewOrderdetailsByeachOrder(){
+        return "/user/Order-detail-view";
+    }
 
 
 

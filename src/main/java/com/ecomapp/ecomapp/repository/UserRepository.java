@@ -22,6 +22,15 @@ public interface UserRepository extends JpaRepository<User,Long> {
     String findReferralCodeByEmail(@Param("email") String email);
 
     User findByReferralCode(String referralCode);
+
+
+    User findByEmailOrPhone(String email, String phoneNumber);
+
+//    String findByReferralCodeForUser(String referrer);
+
+
+    @Query("SELECT u.referralCode FROM User u WHERE u.id = :userId")
+    String getReferralCode(@Param("userId") Long userId);
 }
 
 

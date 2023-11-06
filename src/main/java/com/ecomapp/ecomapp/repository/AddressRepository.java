@@ -19,6 +19,11 @@ public interface AddressRepository extends JpaRepository<Address, UUID> {
 
     List<Address> findByIsDeletedFalse();
 
+    @Query("SELECT a FROM Address a WHERE a.user = :user AND a.isDeleted = false")
+    List<Address> getNonDeleteAddressByCustomer(@Param("user") User user);
+
+
+
 
 // Arrays findByUserEmail(String email);
 

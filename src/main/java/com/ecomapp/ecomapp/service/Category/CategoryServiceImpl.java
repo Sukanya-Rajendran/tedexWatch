@@ -40,7 +40,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public void addCategory(Category category) {
-         categoryRepo.save(category);
+
+        categoryRepo.save(category);
     }
 
     @Override
@@ -64,6 +65,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         return categoryRepo.findByName(name);
     }
+
+    @Override
+    public Optional<Category> getCategoryById(int id) {
+        return Optional.empty();
+    }
+
 }
 
 

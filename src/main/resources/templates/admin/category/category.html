@@ -89,9 +89,15 @@
                                 <button th:if="${category.isAvailable}" type="button" class="btn btn-danger">
                                     Make Unavailable
                                 </button>
+
                                 <button th:unless="${category.isAvailable}" type="button" class="btn btn-success">
                                     Make Available
                                 </button>
+                            <td>
+                        <!-- Link to the update page for each category -->
+                        <a th:href="@{'/admin/category/update/' + ${category.id}}" class="btn btn-sm">Update</a>
+                    </td>
+
                             </div>
                         </a>
                     </td>

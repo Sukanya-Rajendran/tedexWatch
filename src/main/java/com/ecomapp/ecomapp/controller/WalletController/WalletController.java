@@ -77,22 +77,3 @@ public class WalletController {
 
 
 }
-
-//    @PostMapping("/addCredit")
-//    public String addCreditToWallet(@RequestParam double amount, Principal principal) {
-//        // Retrieve the user from the logged-in principal
-//        User user = userService.findByUsername(principal.getName());
-//
-//        // Get the user's wallet
-//        Wallet wallet = user.getWallet();
-//
-//        // Add the specified amount to the wallet
-//        double currentBalance = wallet.getBalance();
-//        wallet.setBalance(currentBalance + amount);
-//
-//        // Save the updated wallet
-//        walletService.saveWallet(wallet);
-//
-//        return "redirect:/wallet"; // Redirect back to the wallet page after adding credit.
-//    }
-//}

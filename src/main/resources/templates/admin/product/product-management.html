@@ -276,76 +276,80 @@
 <!--                    </div>-->
 <!--                </td>-->
                 <td>
-                    <a th:href="@{/product/edit/{id}(id=${product.id})}" class="btn btn-primary btn-sm" id="editButton">Edit</a>
 
                 <td>
-<!--                    <a href="#" class="btn btn-primary btn-sm" id="editButton">Edit</a>-->
+                    <a th:href="@{/product/update/{id}(id=${product.id})}" class="btn btn-primary btn-sm" id="editButton">Edit</a>
+                </td>
+
+                <td>
+
+<!--      <a href="#" class="btn btn-primary btn-sm" id="editButton">Edit</a>-->
                     <a th:href="@{/product/delete/{id}(id=${product.id})}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this product?">Delete</a>
                 </td>
 
-                <div class="modal" tabindex="-1" role="dialog" id="editModal">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit Product</h5>
+<!--                <div class="modal" tabindex="-1" role="dialog" id="editModal">-->
+<!--                    <div class="modal-dialog" role="document">-->
+<!--                        <div class="modal-content">-->
+<!--                            <div class="modal-header">-->
+<!--                                <h5 class="modal-title">Edit Product</h5>-->
 
                                 <!--->
 
-                                <form th:object="${product}" th:action="@{/product/save}" method="post" enctype="multipart/form-data">
-                                    <div class="form-group">
-                                        <label for="productName">Product Name:</label>
-                                        <input type="text" class="form-control" name="productName" id="productName" required>
-                                        <span class="text-danger" th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="price">Price:</label>
-                                        <input type="number" class="form-control" name="price" id="price" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="categoryId">Category:</label>
-                                        <select class="form-control" name="category" id="categoryId" required>
-                                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="shortDescription">Short Description:</label>
-                                        <textarea class="form-control" name="shortDescription" id="shortDescription" required></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="longDescription">Long Description:</label>
-                                        <textarea class="form-control" name="longDescription" id="longDescription" required></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="images">Images:</label>
-                                        <input type="file" class="form-control-file" name="images" id="images" multiple>
-                                    </div>
-                                    <div class="image-grid" id="imagePreview">
-                                        <!-- Image previews will be added dynamically here -->
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                </form>
-                            </div>
-s
-                        </div>
-                        </form>
+<!--                                <form th:object="${product}" th:action="@{/product/save}" method="post" enctype="multipart/form-data">-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label for="productName">Product Name:</label>-->
+<!--                                        <input type="text" class="form-control" name="productName" id="productName" required>-->
+<!--                                        <span class="text-danger" th:if="${#fields.hasErrors('productName')}" th:errors="*{productName}"></span>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label for="price">Price:</label>-->
+<!--                                        <input type="number" class="form-control" name="price" id="price" required>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label for="categoryId">Category:</label>-->
+<!--                                        <select class="form-control" name="category" id="categoryId" required>-->
+<!--                                            <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"></option>-->
+<!--                                        </select>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label for="shortDescription">Short Description:</label>-->
+<!--                                        <textarea class="form-control" name="shortDescription" id="shortDescription" required></textarea>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label for="longDescription">Long Description:</label>-->
+<!--                                        <textarea class="form-control" name="longDescription" id="longDescription" required></textarea>-->
+<!--                                    </div>-->
+<!--                                    <div class="form-group">-->
+<!--                                        <label for="images">Images:</label>-->
+<!--                                        <input type="file" class="form-control-file" name="images" id="images" multiple>-->
+<!--                                    </div>-->
+<!--                                    <div class="image-grid" id="imagePreview">-->
+<!--                                        &lt;!&ndash; Image previews will be added dynamically here &ndash;&gt;-->
+<!--                                    </div>-->
+<!--                                    <button type="submit" class="btn btn-primary">Save Changes</button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--s-->
+<!--                        </div>-->
+<!--                        </form>-->
 
 
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <script>
-    document.getElementById('editButton').addEventListener('click', function () {
-        // Fetch the edit page content using AJAX
-        fetch('@{/product/edit/{id}(id=${product.id})}')
-            .then(response => response.text())
-            .then(data => {
-                document.querySelector('#editModal .modal-body').innerHTML = data;
-                $('#editModal').modal('show');
-            });
-    });
-</script>
+<!--                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">-->
+<!--                                    <span aria-hidden="true">&times;</span>-->
+<!--                                </button>-->
+<!--                            </div>-->
+<!--                            <div class="modal-body">-->
+<!--                                <script>-->
+<!--    document.getElementById('editButton').addEventListener('click', function () {-->
+<!--        // Fetch the edit page content using AJAX-->
+<!--        fetch('@{/product/edit/{id}(id=${product.id})}')-->
+<!--            .then(response => response.text())-->
+<!--            .then(data => {-->
+<!--                document.querySelector('#editModal .modal-body').innerHTML = data;-->
+<!--                $('#editModal').modal('show');-->
+<!--            });-->
+<!--    });-->
+<!--</script>-->
                                 <!-- You can load the edit page content here using AJAX -->
                             </div>
                         </div>

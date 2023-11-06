@@ -2,10 +2,7 @@ package com.ecomapp.ecomapp.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.UUID;
 
 
@@ -38,11 +35,11 @@ public class Address extends BaseEntity {
     private boolean defaultAddress;
     private boolean enabled = true;
 
+    private boolean isDefault;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
 
 

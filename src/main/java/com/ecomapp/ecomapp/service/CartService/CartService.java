@@ -26,12 +26,6 @@ public interface CartService {
 
     Cart getCartById(UUID cartId);
 
-//
-//     void addCouponToCart(Cart cart, Coupon coupon) ;
-
-
-
-//    Cart applyCouponToCart(UUID cartId, Coupon coupon);
 
 }
 

@@ -6,10 +6,14 @@ import com.ecomapp.ecomapp.model.User;
 import java.util.UUID;
 
 public interface DefaultAddressService {
-    Address findDefaultAddressByUser(User user);
+//    Address findDefaultAddressByUser(User user);
+//
+//    void setDefaultAddress(User user,UUID id);
+//
+//    void setDefaultAddress(Address address);
 
-    void setDefaultAddress(User user,UUID id);
+    void setDefaultAddressForUser(String username, UUID addressId);
 
-    void setDefaultAddress(Address address);
+    Address getDefaultAddressForUser(String username);
 }
 

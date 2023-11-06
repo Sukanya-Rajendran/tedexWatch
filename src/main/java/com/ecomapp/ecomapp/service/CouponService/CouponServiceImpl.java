@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -59,11 +60,42 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public void deleteCoupon(Long id) {
-
         couponRepository.deleteById(id);
     }
-}
 
+
+    public boolean validateCouponCode(String couponCode) {
+        // Check if the provided coupon code exists in the database
+        Optional<Coupon> coupon = couponRepository.findByCode(couponCode);
+       if(coupon.isPresent()){
+           boolean isExpired = coupon.get().isExpired();
+           System.out.println(isExpired);
+           return isExpired;
+       }else{
+           return false;
+       }
+
+    }
+
+    @Override
+    public boolean isCouponcodeExsitingOrNot(String couponcode) {
+        return  couponRepository.existsByCode(couponcode);
+    }
+
+
+
+
+    @Override
+    public Coupon getCouponByCouponCode(String Couponcode) {
+        return couponRepository.getCouponByCode(Couponcode);
+    }
+
+//    @Override
+//    public Coupon getdiscountfromtotal(String couponcode) {
+//      return  couponRepository.discountbycode(couponcode);
+//
+//    }
+}
 //    @Override
 //
 //    public boolean validateCoupon(String couponCode, String email) {

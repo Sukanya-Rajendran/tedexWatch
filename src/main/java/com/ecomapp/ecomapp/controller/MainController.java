@@ -11,6 +11,8 @@ import com.ecomapp.ecomapp.service.ProductService.ProductService;
 import com.ecomapp.ecomapp.service.UserService;
 import com.ecomapp.ecomapp.service.address.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +44,8 @@ public class MainController {
     OtpServiceImpl otpServiceimpl;
     @Autowired
     private UserRepository userRepo;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -119,6 +123,33 @@ public String registerUserAccount(@ModelAttribute("user") UserDto userDto, @Requ
     // Redirect to the referral code registration method
     return "redirect:/getOtpPage";
 }
+//new code-3/11/23
+    @GetMapping("/refer/{referralCode}")
+    public String referUser(@PathVariable String referralCode, Model model) {
+        System.out.println(referralCode+"1111111111111111111111111111111");
+        User referredUser = userService.findByReferralCode(referralCode);
+        System.out.println(referredUser+"123y434y734437347 refered user  is"+referredUser);
+        model.addAttribute("userDto",referredUser);
+
+        if (referredUser != null) {
+            sendReferralEmail(referredUser.getEmail(), referredUser.getReferralCode());
+            return "redirect:/success";
+        } else {
+            model.addAttribute("error", "User not found.");
+            return "error";
+        }
+    }
+
+    private void sendReferralEmail(String recipientEmail, String referralCode) {
+        // Implement email sending logic using javaMailSender
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("sukanyarajendran3@gmail.com");
+        message.setTo(recipientEmail);
+        message.setSubject("Your Referral Code");
+        message.setText("Your referral code is: " + referralCode);
+        javaMailSender.send(message);
+    }
+
 
 
     @GetMapping("getOtpPage")
@@ -153,16 +184,12 @@ public String registerUserAccount(@ModelAttribute("user") UserDto userDto, @Requ
     @GetMapping("/shopView/{productId}")
     public String shopview(Model model, @PathVariable UUID productId) {
         Product product = productService.findById(productId).orElse(null);
-
         if (product != null) {
             model.addAttribute("products", product);
-
-            return "user/product-detail"; // You should have a view for displaying a single product.
+            return "user/product-detail";
         } else {
             System.out.println("the product is not avaliable");
-            // Handle the case where the product with the specified ID is not found.
-            // You can add an error message or perform any  necessary action.
-            return "/user/error"; // You should create an error view for this.
+            return "/user/error";
         }
     }
 

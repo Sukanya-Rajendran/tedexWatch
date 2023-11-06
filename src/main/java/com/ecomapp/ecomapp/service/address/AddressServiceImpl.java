@@ -49,7 +49,7 @@ public class AddressServiceImpl implements  AddressService {
 
     @Override
     public List<Address> getNonDeleteAddressByCustomer(User user) {
-        return addressRepository.findByIsDeletedFalse();
+        return addressRepository.getNonDeleteAddressByCustomer(user);
     }
 
     @Override

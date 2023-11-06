@@ -25,6 +25,16 @@ public interface CouponService {
 
     void deleteCoupon(Long id);
 
+    boolean validateCouponCode(String couponcode);
+
+    boolean isCouponcodeExsitingOrNot(String couponcode);
+
+
+
+    Coupon getCouponByCouponCode(String Couponcode);
+
+//    Coupon getdiscountfromtotal(String couponcode);
+
 //    boolean validateCoupon(String couponCode, String email);
 //
 //    Coupon getCouponByCode(String couponCode);

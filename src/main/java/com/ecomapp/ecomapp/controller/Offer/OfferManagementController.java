@@ -1,17 +1,19 @@
 package com.ecomapp.ecomapp.controller.Offer;
 
+import com.ecomapp.ecomapp.model.Category;
 import com.ecomapp.ecomapp.model.Coupon;
 import com.ecomapp.ecomapp.model.Offer;
+import com.ecomapp.ecomapp.repository.categoryrepo.CategoryRepo;
 import com.ecomapp.ecomapp.service.OfferService.OfferService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/offers")
@@ -20,63 +22,43 @@ public class OfferManagementController {
     private OfferService offerService;
 
 
-    @GetMapping
-    public List<Offer> getAllOffers() {
-        return offerService.getAllOffers();
+    @Autowired
+    CategoryRepo categoryRepo;
+
+    @GetMapping("/offer")
+    public String listOfOffers(Model model) {
+        List<Offer> offers = offerService.getAllOffers(); // Modify this based on your service
+        model.addAttribute("offers", offers);
+        return "/admin/Offer/manage_offers";
+    }
+    @GetMapping("/typeOfOffer")
+    public String showOfferForm(Model model) {
+        model.addAttribute("offer", new Offer());
+        List<Category> categoryList = categoryRepo.findCategoryByIsAvailableTrue();
+        System.out.println(categoryList+"categoryList123435983490");
+        model.addAttribute("categories",categoryList);
+        return "admin/Offer/create_offer";
     }
 
-    @GetMapping("/{id}")
-    public Offer getOfferById(@PathVariable Long id) {
-        return offerService.getOfferById(id);
-    }
-
-
-    @PutMapping("/{id}")
-    public Offer updateOffer(@PathVariable Long id, @RequestBody Offer offer) {
-        return offerService.updateOffer(id, offer);
-    }
-
-    @DeleteMapping("/{id}")
-    public void deleteOffer(@PathVariable Long id) {
-        offerService.deleteOffer(id);
-    }
-
-
-    //    @GetMapping("/list")
-//    public String listReferralCodes(Model model) {
-//        List<ReferralCode> referralCodes = referralCodeService.getAllReferralCodes();
-//        model.addAttribute("referralCodes", referralCodes);
-//        return "list_referral_codes"; // Create a Thymeleaf template for listing referral codes
-//    }
-    @GetMapping("/list")
-    public String listOffers(Model model) {
-        System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-//        List<Offer> offers = offerService.getAllOffers();
-        model.addAttribute("offers", offerService.getAllOffers());
-        return "admin/Offer/manage_Offers"; // Create a Thymeleaf template for listing offers
-    }
-
-    @GetMapping("/create")
-    public String createOfferForm(Model model) {
-        model.addAttribute("newOffer", new Offer());
-        return "admin/Offer/create_Offer"; // Create a Thymeleaf template for creating offers
-    }
-
-    @PostMapping("/create")
+    @PostMapping("/typeOfOffer")
     public String createOffer(@ModelAttribute Offer offer) {
-        System.out.println(offer + "==================");
+        System.out.println(offer+"23782184921941294721748129747````````````````````````````````````````````````````````````");
         offerService.createOffer(offer);
-        return "redirect:/offers/list";
+        return "redirect:/offers/offer";
     }
+
+//    @PostMapping("/typeOfOffer")
+//    public String createCoupon(@ModelAttribute Offer offer, @RequestParam("offerType") String offerType) {
+//        System.out.println(offer+"this is offer");
+//        System.out.println(offerType+"this is offer type 232424");
+//        offer.setOfferType(offerType); // Set the offer type in the Offer object
+//        offerService.createOffer(offer);
+//        System.out.println(offer + "it is offer 1233535325325");
+//        return "redirect:/offers/offer";
+//    }
+
+
+
+
 
 }
-
-//    @GetMapping("/manage")
-//    public String manageOffers(Model model) {
-//        System.out.println("hioneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee");
-//        List<Offer> offers = offerService.getAllOffers();
-//        model.addAttribute("offers", offers);
-//        model.addAttribute("newOffer", new Offer()); // An empty Offer object for the form
-//        return "admin/Offers/manage_Offers"; // Create a Thymeleaf template for managing offers
-//    }
-//}

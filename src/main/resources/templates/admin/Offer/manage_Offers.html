@@ -92,28 +92,36 @@
 
 <!-- Display success or error messages here if needed -->
 
+<body>
+<h1>Offer List</h1>
+<!-- ... (your existing code) ... -->
+
+<h1>Offer List</h1>
+
+<!-- Add Offer button -->
+<div class="create-button">
+  <a th:href="@{/offers/offer/typeOfOffer}" class="button">Add Offer</a>
+</div>
+
 <table>
   <thead>
   <tr>
     <th>ID</th>
-<!--    <th>Referral Code</th>-->
-    <th>Referral Amount</th>
+    <th>Offer Type</th>
+    <th>Description</th>
+    <th>Offer Percentage</th>
+    <th>Expire Date</th>
     <th>Active</th>
   </tr>
   </thead>
   <tbody>
   <tr th:each="offer : ${offers}">
     <td th:text="${offer.id}"></td>
-<!--    <td th:text="${offer.referralCode}"></td>-->
-    <td th:text="${offer.referralAmount}"></td>
-    <td th:text="${offer.active} ? 'Active' : 'Inactive'"></td>
+    <td th:text="${offer.offerType}"></td>
+    <td th:text="${offer.description}"></td>
+    <td th:text="${offer.offerPercentage}"></td>
+    <td th:text="${offer.expireDate}"></td>
+    <td th:text="${offer.active ? 'Yes' : 'No'}"></td>
   </tr>
   </tbody>
 </table>
-
-<!-- Add a button to create a new offer -->
-<div class="create-button">
-  <a th:href="@{/offers/create}" class="btn btn-primary">Create New Offer</a>
-</div>
-</body>
-</html>

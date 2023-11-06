@@ -53,11 +53,16 @@ public class AdminProductController {
                                @RequestParam(name = "page", required = false, defaultValue = "0") int page,
                                @RequestParam(name = "size", required = false, defaultValue = "50") int size,
                                @RequestParam(name = "keyword", required = false) String keyword,
-                               @RequestParam(name = "filter", required = false, defaultValue = "") String filter) {
+                               @RequestParam(name = "filter", required = false, defaultValue = "") String filter)
+
+
+    {
+                       size = Math.max(1, size);
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.fromString(sort), field));
 
         Page<Product> products = Page.empty();
+        System.out.println(products+"==================it is t");
 
         if (keyword == null || keyword.equals("")) {
             products = productService.findAll(pageable);
@@ -105,10 +110,11 @@ public class AdminProductController {
     @GetMapping("/edit/{id}")
     public String editProduct(@PathVariable String id, Model model) {
         Optional<Product> product = productService.findById(UUID.fromString(id));
+        System.out.println(product+"==============product  i edit");
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
             model.addAttribute("categories", categoryService.findAll());
-            return "redirct: /update"; // Make sure to return the correct Thymeleaf template
+            return "redirect: /update"; // Make sure to return the correct Thymeleaf template
         }
         return "product/";
     }
@@ -137,6 +143,7 @@ public class AdminProductController {
                                 @RequestParam(value = "deletedImages", required = false) List<String> deletedImages,
                                 @RequestParam(value = "newImages", required = false) List<MultipartFile> newImages,
                                 Model model) throws IOException {
+        System.out.println(product+"=============== it is product page ");
         if (result.hasErrors()) {
             model.addAttribute("categories", categoryService.findAll());
             return "admin/product/update-product";
@@ -186,7 +193,9 @@ public class AdminProductController {
     @PostMapping("/addproduct")
     public String addproduct(@ModelAttribute Product product,
                              @RequestParam("imagefiles") List<MultipartFile> imagefiles) {
+
         List<byte[]> addproduct = new ArrayList<>();
+
         for (MultipartFile file : imagefiles) {
             try {
                 addproduct.add(file.getBytes());
@@ -291,12 +300,13 @@ public class AdminProductController {
     }
 
 
-    @GetMapping("/product/update/{id}")
+    @GetMapping("/update/{id}")
     public String updateCategory(@PathVariable("id") UUID id, Model model) {
         Optional<Product> product = productService.getProductById(id);
+        System.out.println(product+"this is the product===================");
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
-            return "/admin/product/product-management";
+            return "/admin/product/update-product";
         } else {
             return "/error";
         }

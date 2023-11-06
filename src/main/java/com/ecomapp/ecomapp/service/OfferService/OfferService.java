@@ -6,11 +6,8 @@ import java.util.List;
 public interface OfferService {
     List<Offer> getAllOffers();
 
-    Offer getOfferById(Long id);
+    void createOffer(Offer offer);
 
-    Offer createOffer(Offer offer);
 
-    Offer updateOffer(Long id, Offer offer);
 
-    void deleteOffer(Long id);
 }

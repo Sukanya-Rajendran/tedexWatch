@@ -31,7 +31,20 @@ public interface UserService extends UserDetailsService {
 
 
     void addAmountToReferedUser(String referralCode);
+
+
+    User findByEmailOrPhone(String email, String phoneNumber);
+
+    void save(User referrer);
+
+
+
+//    String getReferralCodeForUser(User user);
+    String getReferralCodeForUser(Long userId);
+
+    User findByReferralCode(String referralCode);
 }
+
 
 
 

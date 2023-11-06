@@ -10,7 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CouponRepository extends JpaRepository<Coupon,Long> {
+    Optional <Coupon> findByCode(String couponCode);
 
 
-    Coupon findByCode(String couponCode);
+    boolean existsByCode(String code);
+
+
+
+    Coupon getCouponByCode(String code);
+
+
+
+//    Coupon discountbycode(String couponcode);
+//    Optional<Coupon> findByCouponCode(String code);
 }

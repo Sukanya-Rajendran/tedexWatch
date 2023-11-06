@@ -80,7 +80,9 @@
                             <div class="row">
                                 <div class="col">
                                     <div th:each="image, imageIndex : *{images}" id="imageDiv${imageIndex.index}">
-                                        <img th:src="@{/images/product/{imagePath}(imagePath=${image.imagePath(0)})}" class="img-thumbnail" style="width: 200px;" id="image${imageIndex.index}">
+<!--                                        <img th:src="@{/images/product/{imagePath}(imagePath=${image.imagePath(0)})}" class="img-thumbnail" style="width: 200px;" id="image${imageIndex.index}">-->
+                                        <img th:src="${image.imagePath}" alt="Product Image" />
+
                                         <div>
                                             <button type="button" class="btn btn-danger delete-button" th:attr="data-image-id=${image.id}, data-image-index=${imageIndex.index}" onclick="deleteImage(this.getAttribute('data-image-id'), this.getAttribute('data-image-index'))">Delete</button>
                                         </div>
@@ -95,7 +97,7 @@
                         </div>
                         <input type="hidden" id="deletedImages" name="deletedImages">
                         <button type="submit" class="btn btn-primary">Update Product</button>
-                        <a th:href="@{/variants/{id}(id=${product.id})}" class="btn btn-primary" style="margin-left: 200px;">Variants</a>
+<!--                        <a th:href="@{/variants/{id}(id=${product.id})}" class="btn btn-primary" style="margin-left: 200px;">Variants</a>-->
                     </form>
 
                 </div>

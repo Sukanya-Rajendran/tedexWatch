@@ -1,47 +1,47 @@
       console.log("hiiii")
-          function saveOrder() {
+         function saveOrder() {
+             let addressId = document.querySelector('input[name="addressid"]:checked');
 
-    var paymentStatus = document.getElementById("paymentMethod").textContent;
-    var addressId = document.getElementById("addressId").textContent;
-    console.log(addressId+"addressId=");
-    const data = {
-        paymentStatus: paymentStatus,
-        addressId: addressId
-
-    };
-
-    // Send an AJAX POST request to the backend endpoint
-    $.ajax({
-        type: "POST",
-        url: "/saveOrder",
-        data: JSON.stringify(data),
-        contentType: "application/json",
-        success: function (response) {
+             addressId = addressId.value;
 
 
-                        window.location.href = "/orderSuccess";
+             let paymentStatus = document.querySelector('input[name="paymentMethod"]:checked');
+             paymentStatus = paymentStatus.value;
 
-                        console.log("Order was not saved successfully.");
+             console.log(addressId, "addressId=");
 
+             // Construct the request data as an object
+             const requestData = {
+                 addressid: addressId,
+                 paymentMethod: paymentStatus,
 
-        },
-        error: function (xhr, status, error) {
-            console.log("Error occurred while saving the order:", error);
+             };
+             console.log("request params passed");
 
-        }
-    });
-}
+             // Send an AJAX POST request to the backend endpoint
+             $.ajax({
+                 type: "get",
+                    url: `order/save/${addressId}/${paymentStatus}`,   // Update the URL
+                 data: requestData, // Send data as JSON or form data, depending on your server's expectations
 
-
-
-
+                 success: function (response) {
+                     console.log("coming here");
+                     // Redirect to the success page after successful order processing
+                     window.location.href = "/order/success";
+                     console.log("Order was saved successfully.");
+                 },
+                 error: function (xhr, status, error) {
+                     console.log("Error occurred while saving the order:", error);
+                 }
+             });
+         }
 
 const buy = document.querySelector("#buy");
 const offerPrice = document.getElementById("total").textContent;
 
             buy.addEventListener("click", () => {
 
-console.log('offer pridce',offerPrice)
+
 console.log('typr', typeof(offerPrice))
   const paymentStatus = document.querySelector('input[name="paymentMethod"]:checked');
   console.log(paymentStatus.value,paymentStatus , " hello")
@@ -73,7 +73,7 @@ console.log('typr', typeof(offerPrice))
                             currency: 'INR',
                             amount: response.amount,
                             order_id: response.id,
-                            name: 'Pedal Planet',
+                            name: 'Time Zone',
                             description: 'Online Payment',
                             handler: function (response) {
 
@@ -101,6 +101,7 @@ console.log('typr', typeof(offerPrice))
       contentType: "text/plain"
     });
   } else if (paymentStatus.value === "COD") {
+  console.log("system")
     saveOrder();
     console.log("payment cash on delivery order")
   }else if (paymentStatus.value === "WALLET"){

@@ -13,6 +13,7 @@ import com.ecomapp.ecomapp.service.OrderService.OrderService;
 import com.ecomapp.ecomapp.service.ProductService.ProductService;
 import com.ecomapp.ecomapp.service.UserService;
 import com.ecomapp.ecomapp.service.address.AddressService;
+import com.ecomapp.ecomapp.service.address.DefaultAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +45,8 @@ public class CheckOutController {
     private OrderService orderService;
     @Autowired
     private AddressRepository addressRepository;
+    @Autowired
+    private DefaultAddressService defaultAddressService;
 
     public String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -54,28 +57,46 @@ public class CheckOutController {
     @GetMapping("/all")
     public String allCheckouts(Principal principal, Model model) {
         User user = userService.findByUsername(principal.getName());
+        Address defaultaddress = user.getDefaultAddress();
+        System.out.println(defaultaddress+"123465465236532653214521621");
+
+
+
 
 //        System.out.println(prinicipal.getName());
         List<Address> addresses = addressService.getNonDeleteAddressByCustomer(user);
         for (Address userad : addresses) {
             System.out.println(userad);
         }
-        List<Cart> avaliablecartitem = cartRepository.findAll();
-        System.out.println(avaliablecartitem.get(0).getProduct().getImages().get(0) + "---------------");
+
+
+
+        List<Cart> cart  = cartRepository.findByUser_id(user.getId());
+        System.out.println(cart+"===============================cart id");
+        System.out.println(cart.get(0).getProduct().getImages().get(0) + "---------------");
 //        Address defaultAddress = addrm essService.getDefaultAddress(principal.getName());
         int total = 0;
-        for (Cart item : avaliablecartitem) {
+        for (Cart item : cart) {
             total += item.getQuantity() * item.getProduct().getPrice();
         }
+        Address defaultAddress = null;
+        for (Address address : addresses) {
+            if (address.isDefault()) { // Assuming isDefault is a boolean attribute
+                defaultAddress = address;
+                System.out.println(defaultAddress);
+                break; // No need to continue checking once we find the default address
+            }
+        }
+
 
 //
 //
 //
 //  model.addAttribute("defaultAddress", defaultAddress);
         model.addAttribute("total",total);
-        model.addAttribute("avaliablecartitem", avaliablecartitem);
+        model.addAttribute("avaliablecartitem", cart);
         model.addAttribute("total", cartService.getTotalPrice(principal.getName()));
-
+        model.addAttribute("defaultAddress", defaultaddress);
 
 //        System.out.println(defaultAddress+"================================");
         model.addAttribute("address", addresses);
@@ -122,91 +143,12 @@ public class CheckOutController {
     public String deleteaddress() {
         return "/user/CheckOut";
 
-}
-
-
-
-
-
-
-//
-//    public Address getDefaultAddress(String email) {
-//        Address defaultAddress = addressRepository.findDefaultAddress(email);
-//        if (defaultAddress == null) {
-//            throw new GlobalExceptionHandler.DefaultAddressNotFoundException("Default address not found for user: " + email);
-//        }
-//        return defaultAddress;
-//    }
-
-
-//    @PostMapping("/saveorder")
-//    public String saveorder(@RequestParam( "addressid") UUID addressId,
-//
-//                            @RequestParam("paymentMethod") Payment paymentmethod) {
-//        System.out.println(addressId +"this is addrress id");
-//
-//        System.out.println( paymentmethod + "this is paymentmethod");
-//        User user = userService.findByUsername(getCurrentUsername());
-//        Cart cart = user.getCart();
-//        UUID id =user.getCart().getId();
-//        List<Cart> avaliablecartitem = cartRepository.findAll();
-//        List<Product> newproduct = new ArrayList<>();
-//        for(Cart carts : avaliablecartitem){
-//            newproduct.add(carts.getProduct());
-//        }
-//        Order savedOrder = orderService.saveOrder(addressId, paymentmethod, user,newproduct);
-//        return "redirect:/order";
-//
-////    }
-//@PostMapping("/saveaddress")
-//public String saveAddress(Model model, RedirectAttributes redirectAttributes, @ModelAttribute Address address,
-//                          @RequestParam(value = "setDefault", required = false) boolean setDefault) {
-//    Optional<User> user = Optional.ofNullable(userService.findByUsername(getCurrentUsername()));
-//
-//    if (user.isPresent()) {
-//        User existingUser = user.get();
-//        address.setUser(existingUser);
-//
-//        if (setDefault) {
-//            // Set this address as the default address
-//            address.setDefaultAddress(true);
-//
-//            // Clear the default flag for other addresses
-//            addressService.clearDefaultAddresses(existingUser, address.getId());
-//        }
-//
-//        addressService.save(address);
-//        model.addAttribute("user", user);
-//        redirectAttributes.addFlashAttribute("success", "Successfully added");
-//        return "redirect:/all";
-//    } else {
-//        redirectAttributes.addFlashAttribute("error", "User not found");
-//        return "redirect:/saveaddress";
-//    }
-//}
-
-//    }
-//    @PostMapping("/setDefaultAddress")
-//    public String setDefaultAddress(@RequestParam("addressId") UUID addressId, Principal principal) {
-//        String email = principal.getName();
-//        addressService.setDefaultAddress(email, addressId);
-//        return "redirect:/checkout";
-//    }
-
-
-//
-//    @GetMapping("/defaultaddress")
-//    public String checkoutPage(Model model, @ModelAttribute("currentUser") User currentUser) {
-//        // Get the default address for the user
-//        Address defaultAddress = addressService.getDefaultAddressForUser(currentUser);
-//
-//        model.addAttribute("defaultAddress", defaultAddress);
-//
-//        // Other checkout page logic
-//        // ...
-//
-//        return "/user/CheckOut";
-//    }
+}    @GetMapping("/default-address/set/{addressId}")
+    public String setDefaultAddress(@PathVariable("addressId") UUID addressId, Principal principal, RedirectAttributes redirectAttributes) {
+        defaultAddressService.setDefaultAddressForUser(principal.getName(), addressId);
+        redirectAttributes.addFlashAttribute("message", "Address updated as default");
+        return "redirect:/all";
+    }
     @GetMapping("/deleteAddressAndStayOnCheckout/{addressId}")
     public String deleteAddressAndStayOnCheckout(@PathVariable("addressId") String addressId, Model model) {
         addressService.disableAddress(UUID.fromString(addressId));

@@ -4,6 +4,7 @@ import com.ecomapp.ecomapp.repository.OfferRepository.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -12,34 +13,21 @@ public class OfferServiceImpl implements OfferService {
     @Autowired
     private OfferRepository offerRepository;
 
-    @Autowired
-    public OfferServiceImpl(OfferRepository offerRepository) {
-        this.offerRepository = offerRepository;
-    }
 
     @Override
     public List<Offer> getAllOffers() {
-        return offerRepository.findAll();
+       return offerRepository.findAll();
     }
 
     @Override
-    public Offer getOfferById(Long id) {
-        return offerRepository.findById(id).orElse(null);
-    }
+    public void createOffer(Offer offer) {
+        Offer newOffer = new Offer();
+        newOffer.setOfferPercentage(offer.getOfferPercentage());
+        newOffer.setOfferType(offer.getOfferType());
+        newOffer.setActive(true);
+        newOffer.setDescription(offer.getDescription());
+        newOffer.setExpireDate(offer.getExpireDate());
+        offerRepository.save(newOffer);
 
-    @Override
-    public Offer createOffer(Offer offer) {
-        return offerRepository.save(offer);
-    }
-
-    @Override
-    public Offer updateOffer(Long id, Offer offer) {
-        offer.setId(id);
-        return offerRepository.save(offer);
-    }
-
-    @Override
-    public void deleteOffer(Long id) {
-        offerRepository.deleteById(id);
     }
 }

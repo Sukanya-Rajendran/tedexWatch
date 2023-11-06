@@ -194,18 +194,24 @@
 
               </td>
               <td>
-                <a class="btn btn-primary" th:href="@{/removeCart/{id} (id=${cartitem.id})}">Remove</a>
+                <a class="btn btn-primary" th:href="@{/removeCart/{id}(id=${cartitem.id})}">Remove</a>
               </td>
             </tr>
 
             <tr class="bottom_button">
+              <div class="container rounded bg-white mt-5 mb-5">
+                <div th:if="${message}" class="alert-success text-center">
+                  <p th:text="${message}" class="text-center"></p>
+                </div>
+            <form th:action="@{/applycoupon}" method="post">
 
               <td>
-                <input type="text" id="updateCart" name="updateCart" placeholder="Enter Coupon">
+                <input type="text" id="updateCart" name="ajith" placeholder="Enter Coupon">
+
+                <button type="submit" class="btn_1">Submit</button>
+
               </td>
-              <td>
-                <input type="submit" class="btn_1" value="Submit">
-              </td>
+            </form>
               <td></td>
               <td></td>
               <td>
@@ -254,11 +260,10 @@
               <td>
                 <h5 th:text="${total}"Subtotal></h5>
               </td>
-              <td>
+              <td
 <!--                <span class="cart-total-price" th:text="${total}">$160.00</span>-->
                 <p>Total: <span th:text="${total}"></span></p>
-                <input type="hidden" name="totalcartvalue" th:value="${total}"  />
-              </td>
+                <input type="hidden" name="totalcartvalue" th:value="${total}"</td>
             </tr>
 <!--            <tr class="shipping_area">-->
 <!--              <td></td>-->

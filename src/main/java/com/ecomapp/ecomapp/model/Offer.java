@@ -4,18 +4,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class Offer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String referralCode;
-    private double referralAmount;
-    private boolean active;
-
-    // Getters and setters
+    private Long id;  // Use Long or Integer, depending on your needs
+    private String offerType;
+    private String description;
+    private double offerPercentage;  // Use double or BigDecimal
+    private Date expireDate;
+    private boolean isActive;
 
     public Long getId() {
         return id;
@@ -25,27 +25,44 @@ public class Offer {
         this.id = id;
     }
 
-    public String getReferralCode() {
-        return referralCode;
+    public String getOfferType() {
+        return offerType;
     }
 
-    public void setReferralCode(String referralCode) {
-        this.referralCode = referralCode;
+    public void setOfferType(String offerType) {
+        this.offerType = offerType;
     }
 
-    public double getReferralAmount() {
-        return referralAmount;
+    public String getDescription() {
+        return description;
     }
 
-    public void setReferralAmount(double referralAmount) {
-        this.referralAmount = referralAmount;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getOfferPercentage() {
+        return offerPercentage;
+    }
+
+    public void setOfferPercentage(double offerPercentage) {
+        this.offerPercentage = offerPercentage;
+    }
+
+    public Date getExpireDate() {
+        return expireDate;
+    }
+
+    public void setExpireDate(Date expireDate) {
+        this.expireDate = expireDate;
     }
 
     public boolean isActive() {
-        return active;
+        return isActive;
     }
 
     public void setActive(boolean active) {
-        this.active = active;
+        isActive = active;
     }
+// Getters and setters...
 }

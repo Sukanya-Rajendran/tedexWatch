@@ -37,101 +37,26 @@ public class ProfileController {
         return authentication.getName();
     }
 
-//    @GetMapping("/details")
-//    public String UserProfile(Principal principal, Model model) {
-//        User user = userService.findByUsername(principal.getName());
-//        List<Address> userAddress = addressService.getNonDeleteAddressByCustomer(user);
-//        System.out.println(userAddress+"--------------");
-////        int randomNumber = (int) (Math.random() * 9000) + 1000;
-//
-////        Address defaultAddress = defaultAddressService.findDefaultAddressByUser(user);
-//       String referralCode = userserviceimpl.findReferralCodeByUser(user.getEmail());
-//
-//        model.addAttribute("address", userAddress);
-////        model.addAttribute("defaultAddress", defaultAddress);
-////         Add the random number to the model
-//        model.addAttribute("referralCode", referralCode);
-//
-//        model.addAttribute("user", user);
-//        return "/user/NewProfile";
-//    }
-
-
-    // test code for details
-//    @GetMapping("/details")
-//    public String UserProfile(Principal principal, Model model) {
-//        User user = userService.findByUsername(principal.getName());
-//        List<Address> userAddress = addressService.getNonDeleteAddressByCustomer(user);
-//
-//        // Create a map to store unique IDs for addresses
-//        Map<Address, String> addressUniqueIds = new HashMap<>();
-//
-//        for (Address address : userAddress) {
-//            // Generate a unique ID for each address (you can use UUID or any other method)
-//            String uniqueId = UUID.randomUUID().toString();
-//            addressUniqueIds.put(address, uniqueId);
-//        }
-//
-//        // Retrieve the referral code
-//        String referralCode = userserviceimpl.findReferralCodeByUser(user.getEmail);
-//
-//        model.addAttribute("addressUniqueIds", addressUniqueIds);
-//        model.addAttribute("referralCode", referralCode);
-//        model.addAttribute("user", user);
-//
-//        return "user/NewProfile";
-//    }
-
 
 
     @GetMapping("/details")
-    public String UserProfile(Principal principal, Model model) {
-        User user = userService.findByUsername(principal.getName());
-        List<Address> userAddress = addressService.getNonDeleteAddressByCustomer(user);
-        Address defaultAddress = defaultAddressService.findDefaultAddressByUser(user);
+    public String userProfile(Authentication authentication, Model model) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            String username = authentication.getName();
+            User user = userService.findByUsername(username);
+            if (user != null) {
+                List<Address> userAddress = addressService.getNonDeleteAddressByCustomer(user);
+                int randomNumber = (int) (Math.random() * 9000) + 1000;
+                model.addAttribute("address", userAddress);
+                model.addAttribute("randomNumber", randomNumber);
+                model.addAttribute("user", user);
 
-        // Generate a random number (e.g., between 1000 and 9999)
-        int randomNumber = (int) (Math.random() * 9000) + 1000;
+                return "user/NewProfile";
+            }
+        }
 
-        model.addAttribute("address", userAddress);
-        model.addAttribute("defaultAddress", defaultAddress);
-
-        // Add the random number to the model
-        model.addAttribute("randomNumber", randomNumber);
-
-        model.addAttribute("user", user);
-        return "/user/NewProfile";
+        return "redirect:/login";
     }
-
-//
-//    @PostMapping("/setDefaultAddress/{addressId}")
-//    public String setDefaultAddress(@PathVariable("addressId") UUID addressId, Principal principal) {
-//        System.out.println(addressId+"==========================this is default");
-//        System.out.println("hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii");
-//        User user = userService.findByUsername(principal.getName());
-//        Address address = addressService.findAddressById(addressId);
-//
-//        if (address != null && address.getUser().equals(user)) {
-//            // Update the default address for the user
-//            defaultAddressService.setDefaultAddress(address);
-//        }
-//        return "redirect:/details";
-//    }
-//
-
-
-//    @GetMapping("/details")
-//    public String UserProfile(Principal principal, Model model) {
-//        User user = userService.findByUsername(principal.getName());
-//        List<Address> userAddress = addressService.getNonDeleteAddressByCustomer(user);
-//        System.out.println(user);
-//        for (Address Customer : userAddress) {
-//            System.out.println(Customer);
-//        }
-//        model.addAttribute("address", userAddress);
-//        model.addAttribute("user", user);
-//        return "/user/NewProfile";
-//    }
 
     @GetMapping
     public String showprofilepage() {
@@ -147,18 +72,13 @@ public class ProfileController {
 
     @PostMapping("/update/{addressId}")
     public String updateAddress(@PathVariable String addressId, Address updatedAddress) {
-
         System.out.println(addressId + "address id");
         System.out.println(updatedAddress + "updated address");
-
         addressService.updateAddress(UUID.fromString(addressId), updatedAddress);
         return "redirect:/profile/details";
     }
 
-
-
-
-    @GetMapping("/edit/{addressId}")  // Specify a different URL for the GET request
+    @GetMapping("/edit/{addressId}")
     public String editAddress(@PathVariable UUID addressId, Model model) {
         Address address = addressService.findById(addressId).orElse(null);
         model.addAttribute("address", address);

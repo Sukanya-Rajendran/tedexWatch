@@ -35,15 +35,22 @@ public class UserController {
         return "user/main-page";
     }
 
+
+
     @GetMapping("/address/add")
     public String addAddress(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = Optional.ofNullable(userService.findByUsername(username));
         return "user/address-form";
     }
 
     @PostMapping("address/save")
     public String saveAddress(Model model, RedirectAttributes redirectAttributes,
                               @ModelAttribute Address address) {
-        Optional<User> user = Optional.ofNullable(userService.findByUsername(getCurrentUsername()));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Optional<User> user = Optional.ofNullable(userService.findByUsername(username));
 
         if (user.isPresent()) {
             User existingUser = user.get();
@@ -51,39 +58,11 @@ public class UserController {
 
             addressService.save(address);
             model.addAttribute("user", user);
-            redirectAttributes.addFlashAttribute("success", "Succesfuuly added");
+            redirectAttributes.addFlashAttribute("success", "Successfully added");
             return "redirect:/profile/details";
         } else {
             redirectAttributes.addFlashAttribute("error", "User not found");
             return "redirect:/address/add";
         }
     }
-
-
-
-//    }
-//    @PostMapping("/address/update")
-//
-//    public String updateAddress(@ModelAttribute Address address,
-//                                Model model){
-//
-//
-//        return "redirect:/user/address";
-//    }
-//
-//
-//    @GetMapping("/address/update/{id}")
-//
-//    public String updateAddress(@PathVariable UUID id,
-//                                Model model){
-//
-//        Address address = addressService.findById(id).orElse(null);
-//
-//        model.addAttribute("address",address);
-//
-//        return "user/update-address";
-//
-//    }
-//
-//}
 }

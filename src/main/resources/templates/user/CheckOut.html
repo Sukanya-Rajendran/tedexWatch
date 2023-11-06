@@ -360,7 +360,6 @@
 <!--                </div>-->
 
 <!--            <form th:action="@{/order/save}" method="post">-->
-
                 <div class="card-body border p-3 mt-3 col-md-6">
                   <li th:each="add : ${address}">
                     <label>
@@ -368,7 +367,7 @@
                       <span class="radio-button"></span>
                      Select Address
                     </label>
-<!--                    <input type="hidden"  name="addressid" th:value="${add.id}">-->
+                    <input type="hidden" id="addressId"  name="addressId" th:value="${add.id}">
                     <h5 class="card-title">Address</h5>
                     <p class="card-text">Flat: <span th:text="${add.flat}"></span></p>
                     <p class="card-text">Area: <span th:text="${add.area}"></span></p>
@@ -380,9 +379,11 @@
                     <!--                            <a class="edit-button" th:href="@{/user/address/update/{id}(id=${add.id})}">Edit</a>-->
                     <!-- Replace {addressId} with the actual address ID -->
                     <a class="btn btn-danger" th:href="@{/deleteAddressAndStayOnCheckout/{addressId}(addressId=${add.id})}">Delete</a>
+                    <a class="btn btn-primary" th:href="@{/default-address/set/{addressId}(addressId=${add.id})}" >set default</a>
 
 
-<!--                    <a class="btn btn-danger" th:href="@{/profile/deleteAddress/{addressId}(addressId = ${add.id})}">delete</a>-->
+
+                    <!--                    <a class="btn btn-danger" th:href="@{/profile/deleteAddress/{addressId}(addressId = ${add.id})}">delete</a>-->
                       <a class="btn btn-danger" th:href="@{/profile/edit/{addressId}(addressId=${add.id})}">Edit</a>
                   </li>
 
@@ -390,9 +391,10 @@
 
         </div>
               <input type="hidden" name="cart"  th:value="${avaliablecartitem}"/>
-              <input type="hidden" name="selectedCartIds" th:each="cartitem : ${avaliablecartitem}" th:value="${cartitem.id}" />
+              <input type="hidden" id="" name="selectedCartIds" th:each="cartitem : ${avaliablecartitem}" th:value="${cartitem.id}" />
         <div class="">
           <div class="order-details-confirmation">
+<!--            <p >CrtId<span th:text="${cartitem.id}"></span></p>-->
 
             <div class="cart-page-heading">
               <h5>Your Order</h5>
@@ -570,9 +572,28 @@
           <script src="/assets/js/checkout.js">
 
           </script>
+          <script>
+    // JavaScript to automatically select the radio button for the default address
+    var defaultAddressId = /* Use a way to retrieve the default address ID here */;
+    var radioButtons = document.querySelectorAll('input[type=radio][name="addressId"]');
+
+    radioButtons.forEach(function(radioButton) {
+        if (radioButton.value === defaultAddressId) {
+            radioButton.checked = true;
+        }
+    });
+</script>
 
 
 
 </body>
+<!--<script th:inline="javascript">-->
+<!--    function setDefaultAddress(addressIndex) {-->
+<!--        // Find the selected radio button and set it as checked-->
+<!--        var radioId = 'addressRadioButton-' + addressIndex;-->
+<!--        var radioInput = document.getElementById(radioId);-->
+<!--        radioInput.checked = true;-->
+<!--    }-->
+<!--</script>-->
 
 </html>

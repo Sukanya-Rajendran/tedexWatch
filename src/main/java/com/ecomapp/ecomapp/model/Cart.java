@@ -39,4 +39,7 @@ public class Cart extends BaseEntity {
     private Coupon coupon;
 
     private int totalAmount;
+
+
+
 }

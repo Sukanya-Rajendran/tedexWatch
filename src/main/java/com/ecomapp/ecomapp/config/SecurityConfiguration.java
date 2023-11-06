@@ -101,8 +101,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/details").hasAnyRole("ADMIN","USER","ANONYMOUS")
                 .antMatchers("/create").hasAnyRole("ADMIN","USER","ANONYMOUS")
                 .antMatchers("/create/**").hasAnyRole("ADMIN","USER","ANONYMOUS")
+                .antMatchers("/saveOrder/**").hasAnyRole("ADMIN","USER","ANONYMOUS")
 
                 .antMatchers("/payment/**").hasAnyRole("ADMIN","USER","ANONYMOUS")
+                .antMatchers("/offers/**").hasAnyRole("ADMIN","USER")
 
 
                 .anyRequest().authenticated()

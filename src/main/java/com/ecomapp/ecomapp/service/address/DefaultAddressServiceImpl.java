@@ -1,8 +1,10 @@
 package com.ecomapp.ecomapp.service.address;
 
+import com.ecomapp.ecomapp.dto.UserDto;
 import com.ecomapp.ecomapp.model.Address;
 import com.ecomapp.ecomapp.model.User;
 import com.ecomapp.ecomapp.repository.AddressRepository;
+import com.ecomapp.ecomapp.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,49 +16,30 @@ public class DefaultAddressServiceImpl implements DefaultAddressService {
     @Autowired
     private AddressRepository addressRepository;
 
-//    @Override
-    public Address findDefaultAddressByUser(User user) {
-        return addressRepository.findDefaultAddressByUser(user);
-    }
+    @Autowired
+    private UserService userService;
 
 
     @Override
-    public void setDefaultAddress(User user, UUID addressId) {
-        List<Address> userAddresses = addressRepository.findByUser(user);
+    public void setDefaultAddressForUser(String username, UUID addressId) {
 
-        for (Address address : userAddresses) {
-            if (address.getId().equals(addressId)) {
-                address.setDefaultAddress(true);
-            } else {
-                address.setDefaultAddress(false);
-            }
+        User user = userService.findByUsername(username);
+        System.out.println(user.getFirstName() + "1111111111111111111111111111111111111111111111");
+        Address selectedAddress = addressRepository.findById(addressId).orElse(null);
+        List<Address> addressList = addressRepository.findByIsDeletedFalse();
+        System.out.println(selectedAddress.getId() + "                111111111111111111 this is selcted address id ");
+        for (Address address : addressList) {
+            address.setDefault(false);
             addressRepository.save(address);
         }
+        selectedAddress.setDefault(true);
+        addressRepository.save(selectedAddress);
+
     }
 
     @Override
-    public void setDefaultAddress(Address address) {
-        // Ensure that the provided address is not null and belongs to the user
-        if (address != null) {
-            // First, get the user associated with the address
-            User user = address.getUser();
-
-            // Then, retrieve all addresses for the user
-            List<Address> userAddresses = addressRepository.findByUser(user);
-
-            for (Address userAddress : userAddresses) {
-                if (userAddress.getId().equals(address.getId())) {
-                    userAddress.setDefaultAddress(true);
-                } else {
-                    userAddress.setDefaultAddress(false);
-                }
-                // Save each address to update the default flag
-                addressRepository.save(userAddress);
-            }
-        }
+    public Address getDefaultAddressForUser(String username) {
+        return null;
     }
+
 }
-
-
-
-

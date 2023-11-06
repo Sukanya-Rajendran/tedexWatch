@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 @Controller
@@ -83,17 +84,19 @@ public class CategoryController {
         return "redirect:/admin/category";
 
     }
+//
 
-    @GetMapping("/categories/update/{id}")
-    public String updateCategory(@PathVariable("id") int id, Model model) {
-        Optional<Category> category = categoryService.getCategoryByid(id);
-        if (category.isPresent()) {
-            model.addAttribute("category", category.get());
-            return "/admin/category";
-        } else {
-            return "/error";
-        }
-    }
+//    @GetMapping("/categories/update/{id}")
+//    public String updateCategory(@PathVariable("id") int id, Model model) {
+//        Optional<Category> category = categoryService.getCategoryByid(id);
+//        if (category.isPresent()) {
+//            model.addAttribute("category", category.get());
+//            return "/admin/category";
+//        } else {
+//            return "/error";
+//        }
+//    }
+
     @GetMapping("/searchCategories")
     public String searchCategoryByName(@RequestParam ("name") String name , Model model){
         List<Category> categories = categoryService.getCategoriesByName(name);
@@ -101,6 +104,30 @@ public class CategoryController {
         model.addAttribute("categories" , categories);
         return "/admin/category/category";
     }
+
+
+
+    // Your Controller method
+    @GetMapping("/update/{id}")
+    public String updateCategory(@PathVariable("id") String id, Model model) {
+        System.out.println(id + " this is the category update ");
+        try {
+            UUID categoryId = UUID.fromString(id); // Convert the String to UUID
+            Optional<Category> category = categoryService.getCategoryByid(Integer.parseInt(id));
+            System.out.println(category+" it is optional category  ==============");
+            if (category.isPresent()) {
+                model.addAttribute("category", category.get());
+                return "admin/category/updatecategory"; // Replace with the correct view name
+            } else {
+                return "error"; // Replace with the correct error view name
+            }
+        } catch (IllegalArgumentException e) {
+            // Handle the case where the provided String is not a valid UUID
+            // You can log the error, redirect to an error page, or handle it as needed
+            return "error"; // Replace with the correct error view name
+        }
+    }
+
 
 }
 
